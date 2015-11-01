@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/main_rellay"
+    android:orientation="vertical">
+
+    <SurfaceView
+        android:id="@+id/preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="100dip"
+        android:layout_alignParentBottom="true"
+        android:background="#A000"
+        android:gravity="center_vertical">
+
+        <Button
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:onClick="onCancelClick"
+            android:text="Cancel" />
+
+        <Button
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:onClick="onSnapClick"
+            android:text="Snap Photo" />
+    </RelativeLayout>
+</RelativeLayout>
