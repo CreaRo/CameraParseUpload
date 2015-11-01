@@ -137,6 +137,7 @@ package rish.crearo.cameraparse;
 //}
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -145,7 +146,10 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
@@ -177,7 +181,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Ca
     @Override
     public void onPause() {
         super.onPause();
-        mCamera.stopPreview();
+//        mCamera.stopPreview();
         mCamera.release();
     }
 
@@ -205,21 +209,38 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Ca
     @Override
     public void onShutter() {
         Toast.makeText(this, "Click!", Toast.LENGTH_SHORT).show();
-        Snackbar.make(findViewById(R.id.main_rellay), "Capture Successful.", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        Snackbar.make(findViewById(R.id.main_rellay), "Capture Successful.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
         //Here, we chose internal storage
         try {
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            int THUMBSIZE = 64;
+            Bitmap thumbImage = ThumbnailUtils.extractThumbnail(bitmap, THUMBSIZE, THUMBSIZE);
+
+            ByteArrayOutputStream blob = new ByteArrayOutputStream();
+            thumbImage.compress(Bitmap.CompressFormat.PNG, 0, blob);
+            byte[] thumbnailData = blob.toByteArray();
+
             File sdCard = Environment.getExternalStorageDirectory();
             File dir = new File(sdCard.getAbsolutePath() + "/cameraparse");
+            File dirThumbs = new File(sdCard.getAbsolutePath() + "/cameraparse/thumbnails");
             dir.mkdirs();
-            File file = new File(dir, "p_" + System.currentTimeMillis() + ".jpg");
+            dirThumbs.mkdirs();
+            long currentTime = System.currentTimeMillis() / 1000;
+            File file = new File(dir, "p_" + currentTime + ".png");
+            File fileThumb = new File(dirThumbs, "p_" + currentTime + ".png");
+
             FileOutputStream out = new FileOutputStream(file);
-//            openFileOutput("picture.jpg", Activity.MODE_PRIVATE);
             out.write(data);
+            out.flush();
+            out.close();
+
+            out = new FileOutputStream(fileThumb);
+            out.write(thumbnailData);
             out.flush();
             out.close();
 
@@ -258,4 +279,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Ca
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.i("PREVIEW", "surfaceDestroyed");
     }
+
+
 }

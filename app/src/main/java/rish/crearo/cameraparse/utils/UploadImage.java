@@ -43,11 +43,9 @@ public class UploadImage extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = BitmapFactory.decodeFile(element.imageBytes, options);
+        Bitmap bitmap = BitmapFactory.decodeFile(element.imagePath, options);
 
-        // Convert it to byte
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        // Compress image to lower quality scale 1 - 100
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] image = stream.toByteArray();
 

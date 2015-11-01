@@ -22,7 +22,7 @@ import rish.crearo.cameraparse.utils.UploadImage;
 /**
  * Created by rish on 1/11/15.
  */
-public class HomeCardRecycler extends RecyclerView.Adapter<HomeCardRecycler.DataObjectHolder> {
+public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.DataObjectHolder> {
 
     private ArrayList<HomeCardElement> mDataset;
     private Context context;
@@ -56,16 +56,20 @@ public class HomeCardRecycler extends RecyclerView.Adapter<HomeCardRecycler.Data
         return mDataset.size();
     }
 
-    public HomeCardRecycler(Context context, ArrayList<HomeCardElement> dataSet, RelativeLayout relativeLayout) {
+    public HomeCardAdapter(Context context, ArrayList<HomeCardElement> dataSet, RelativeLayout relativeLayout) {
         this.context = context;
         this.mDataset = dataSet;
         this.rellay = relativeLayout;
         thumbNails = new ArrayList<>();
         final int THUMBSIZE = 64;
+        long start = System.currentTimeMillis();
+
         for (HomeCardElement card : mDataset) {
-            Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(card.imageBytes), THUMBSIZE, THUMBSIZE);
-            thumbNails.add(thumbImage);
+            Bitmap thumbBitmap = BitmapFactory.decodeFile(card.thumbnailPath);
+            thumbNails.add(thumbBitmap);
         }
+        long total = (System.currentTimeMillis() - start) / 1000;
+        System.out.println("Total time to setAdapter = " + total);
     }
 
     public static class DataObjectHolder extends RecyclerView.ViewHolder {
