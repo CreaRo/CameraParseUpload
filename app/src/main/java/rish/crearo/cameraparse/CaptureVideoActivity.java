@@ -1,6 +1,7 @@
 package rish.crearo.cameraparse;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -104,7 +105,10 @@ public class CaptureVideoActivity extends Activity implements SurfaceHolder.Call
         // It is very important to unlock the camera before doing setCamera
         // or it will results in a black preview
         if (mCamera == null) {
-            mCamera = Camera.open();
+            if (findFrontFacingCamera() < 0)
+                mCamera = Camera.open();
+            else
+                mCamera = Camera.open(findFrontFacingCamera());
             mCamera.unlock();
         }
 
@@ -165,5 +169,26 @@ public class CaptureVideoActivity extends Activity implements SurfaceHolder.Call
         // once the objects have been released they can't be reused
         mMediaRecorder = null;
         mCamera = null;
+    }
+
+    public void onCameraClick(View v) {
+        finish();
+        startActivity(new Intent(CaptureVideoActivity.this, CapturePhotoActivity.class));
+    }
+
+    private int findFrontFacingCamera() {
+        int cameraId = -1;
+        // Search for the front facing camera
+        int numberOfCameras = Camera.getNumberOfCameras();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                Log.d("t", "Camera found id = " + i);
+                cameraId = i;
+                break;
+            }
+        }
+        return cameraId;
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_rellay"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/main_rellay"
     android:orientation="vertical">
 
     <SurfaceView
@@ -20,14 +20,14 @@
         <Button
             android:layout_width="100dip"
             android:layout_height="wrap_content"
-            android:onClick="onCancelClick"
-            android:text="Cancel" />
+            android:onClick="onVideoClick"
+            android:text="Video" />
 
         <Button
             android:layout_width="100dip"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:onClick="onSnapClick"
-            android:text="Snap Photo" />
+            android:text="Capture" />
     </RelativeLayout>
 </RelativeLayout>

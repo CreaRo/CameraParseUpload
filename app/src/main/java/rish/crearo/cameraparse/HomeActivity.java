@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new HomeCardAdapter(HomeActivity.this, getDataSet(), (RelativeLayout) findViewById(R.id.home_rellay));
+        mAdapter = new HomeCardAdapter(HomeActivity.this, getDataSet());
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -58,7 +57,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //refreshing
-        mAdapter = new HomeCardAdapter(HomeActivity.this, getDataSet(), (RelativeLayout) findViewById(R.id.home_rellay));
+        mAdapter = new HomeCardAdapter(HomeActivity.this, getDataSet());
         mRecyclerView.setAdapter(mAdapter);
     }
 

@@ -1,9 +1,11 @@
 package rish.crearo.cameraparse.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,9 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import rish.crearo.cameraparse.R;
@@ -28,8 +30,6 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.DataOb
     private ArrayList<HomeCardElement> mDataset;
     private Context context;
     private ArrayList<Bitmap> thumbNails;
-
-    private RelativeLayout rellay; //necessary call to display snackbar.
 
     @Override
     public DataObjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,7 +48,24 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.DataOb
             @Override
             public void onClick(View view) {
                 uploadImageToServer(imageCard);
-                Snackbar.make(view, "Uploading Image to Parse", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "Upload to Parse will start shortly", Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (imageCard.imagePath.contains(".png") || imageCard.imagePath.contains(".jpg")) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(new File(imageCard.imagePath)), "image/*");
+                    context.startActivity(intent);
+                } else {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(new File(imageCard.imagePath)), "video/*");
+                    context.startActivity(intent);
+                }
             }
         });
     }
@@ -58,20 +75,21 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.DataOb
         return mDataset.size();
     }
 
-    public HomeCardAdapter(Context context, ArrayList<HomeCardElement> dataSet, RelativeLayout relativeLayout) {
+    public HomeCardAdapter(Context context, ArrayList<HomeCardElement> dataSet) {
         this.context = context;
         this.mDataset = dataSet;
-        this.rellay = relativeLayout;
         thumbNails = new ArrayList<>();
         final int THUMBSIZE = 64;
         long start = System.currentTimeMillis();
 
         for (HomeCardElement card : mDataset) {
             Bitmap thumbBitmap = BitmapFactory.decodeFile(card.thumbnailPath);
+            Matrix matrix = new Matrix();
+            matrix.postRotate(-90);
+            thumbBitmap = Bitmap.createBitmap(thumbBitmap, 0, 0, thumbBitmap.getWidth(), thumbBitmap.getHeight(), matrix, true);
             thumbNails.add(thumbBitmap);
         }
         long total = (System.currentTimeMillis() - start) / 1000;
-        System.out.println("Total time to setAdapter = " + total);
     }
 
     public static class DataObjectHolder extends RecyclerView.ViewHolder {

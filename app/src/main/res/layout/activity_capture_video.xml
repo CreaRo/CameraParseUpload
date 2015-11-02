@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:layout_height="fill_parent">
 
-    <ToggleButton
-        android:id="@+id/toggleRecordingButton"
+    <SurfaceView
+        android:id="@+id/surfaceView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textOff="Start Recording"
-        android:textOn="Stop Recording" />
+        android:layout_height="fill_parent" />
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="100dip"
+        android:layout_alignParentBottom="true"
+        android:background="#A000"
+        android:gravity="center_vertical">
 
-        <SurfaceView
-            android:id="@+id/surfaceView"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"></SurfaceView>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:onClick="onCameraClick"
+            android:text="Camera" />
 
-    </FrameLayout>
-</LinearLayout>
+        <ToggleButton
+            android:id="@+id/toggleRecordingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textOff="Start Recording"
+            android:textOn="Stop Recording" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

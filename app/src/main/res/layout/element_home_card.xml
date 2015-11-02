@@ -3,33 +3,46 @@
     android:id="@+id/element_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="5dp"
+    android:background="#FFFFFF"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/element_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Title" />
 
     <ImageView
         android:id="@+id/element_imageView"
         android:layout_width="100dp"
-        android:layout_height="100dp" />
+        android:layout_height="100dp"
+        android:layout_gravity="center" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:alpha="0.6"
         android:background="@color/colorPrimary"
-        android:orientation="horizontal">
+        android:elevation="5dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/element_upload_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
             android:text="Upload"
             android:textColor="@color/textColorPrimary"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/element_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Title"
+            android:textColor="@color/textColorPrimary"
+            android:textStyle="normal" />
 
     </LinearLayout>
 

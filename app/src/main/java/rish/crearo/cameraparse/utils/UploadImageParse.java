@@ -24,6 +24,8 @@ public class UploadImageParse extends AsyncTask<Void, Void, Void> {
     Context context;
     HomeCardElement element;
 
+    int previousPercentage = 0;
+
     public UploadImageParse(Context context, HomeCardElement element) {
         this.context = context;
         this.element = element;
@@ -73,8 +75,15 @@ public class UploadImageParse extends AsyncTask<Void, Void, Void> {
         }, new ProgressCallback() {
             @Override
             public void done(Integer percentDone) {
-                NotificationMaker.creatStickyNotification(context, percentDone);
-                System.out.println("file Upload " + percentDone + "%");
+                if (percentDone - previousPercentage >= 3) {
+                    NotificationMaker.creatStickyNotification(context, percentDone);
+                    System.out.println("file Upload " + percentDone + "%");
+                    previousPercentage = percentDone;
+                }
+                if (percentDone >= 98) {
+                    NotificationMaker.creatStickyNotification(context, percentDone);
+                    System.out.println("file Upload " + percentDone + "%");
+                }
             }
         });
     }

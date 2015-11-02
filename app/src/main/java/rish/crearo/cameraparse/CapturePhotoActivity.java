@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,7 +37,11 @@ public class CapturePhotoActivity extends Activity implements SurfaceHolder.Call
         mPreview.getHolder().addCallback(this);
         mPreview.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mCamera = Camera.open();
+
+        if (findFrontFacingCamera() < 0)
+            mCamera = Camera.open();
+        else
+            mCamera = Camera.open(findFrontFacingCamera());
 
     }
 
@@ -62,8 +65,9 @@ public class CapturePhotoActivity extends Activity implements SurfaceHolder.Call
         Log.d("CAMERA", "Destroy");
     }
 
-    public void onCancelClick(View v) {
+    public void onVideoClick(View v) {
         finish();
+        startActivity(new Intent(CapturePhotoActivity.this, CaptureVideoActivity.class));
     }
 
     public void onSnapClick(View v) {
@@ -72,7 +76,6 @@ public class CapturePhotoActivity extends Activity implements SurfaceHolder.Call
 
     @Override
     public void onShutter() {
-        Toast.makeText(this, "Click!", Toast.LENGTH_SHORT).show();
         Snackbar.make(findViewById(R.id.main_rellay), "Capture Successful.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
@@ -141,4 +144,19 @@ public class CapturePhotoActivity extends Activity implements SurfaceHolder.Call
         Log.i("PREVIEW", "surfaceDestroyed");
     }
 
+    private int findFrontFacingCamera() {
+        int cameraId = -1;
+        // Search for the front facing camera
+        int numberOfCameras = Camera.getNumberOfCameras();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                Log.d("t", "Camera found id = " + i);
+                cameraId = i;
+                break;
+            }
+        }
+        return cameraId;
+    }
 }
