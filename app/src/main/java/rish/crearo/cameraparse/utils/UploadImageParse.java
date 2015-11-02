@@ -1,7 +1,9 @@
 package rish.crearo.cameraparse.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.parse.ParseException;
@@ -17,9 +19,17 @@ import rish.crearo.cameraparse.elements.HomeCardElement;
 /**
  * Created by rish on 2/11/15.
  */
-public class UploadImageParse {
+public class UploadImageParse extends AsyncTask<Void, Void, Void> {
 
-    public void saveInBack(final HomeCardElement element) {
+    Context context;
+    HomeCardElement element;
+
+    public UploadImageParse(Context context, HomeCardElement element) {
+        this.context = context;
+        this.element = element;
+    }
+
+    public void saveInBackground(final HomeCardElement element, final Context context) {
 
         Bitmap bitmap = BitmapFactory.decodeFile(element.imagePath);
 
@@ -42,25 +52,36 @@ public class UploadImageParse {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    System.out.println("Completed partial upload of " + element.title);
+                    System.out.println("Completed file upload of " + element.title);
                     imgupload.saveEventually(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
-                            System.out.println("Done imgupload to parse");
-                            if (e != null)
+                            System.out.println("Done object upload to parse");
+                            if (e != null) {
                                 e.printStackTrace();
+                                NotificationMaker.createNotification(context, false);
+                            } else {
+                                NotificationMaker.createNotification(context, true);
+                            }
                         }
                     });
                 } else {
-//                    uploadImageListener.onUploadComplete(false);
+                    NotificationMaker.createNotification(context, false);
                     System.out.println("Failed to upload of " + element.title);
                 }
             }
         }, new ProgressCallback() {
             @Override
             public void done(Integer percentDone) {
+                NotificationMaker.creatStickyNotification(context, percentDone);
                 System.out.println("file Upload " + percentDone + "%");
             }
         });
+    }
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+        saveInBackground(element, context);
+        return null;
     }
 }

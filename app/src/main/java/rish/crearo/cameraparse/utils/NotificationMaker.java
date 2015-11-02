@@ -16,7 +16,7 @@ import rish.crearo.cameraparse.R;
  */
 public class NotificationMaker {
 
-    public static void makeNotification(Context context, int percentageComplete) {
+    public static void creatStickyNotification(Context context, int percentageComplete) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.notification_template_icon_bg);
@@ -81,10 +81,9 @@ public class NotificationMaker {
         manager.notify(1009, notification);
     }
 
-    public static void clearNotification(Context context, boolean success) {
+    public static void createNotification(Context context, boolean success) {
         NotificationManager nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nMgr.cancelAll();
-
 
         if (success) {
             showSuccessNotification(context);
