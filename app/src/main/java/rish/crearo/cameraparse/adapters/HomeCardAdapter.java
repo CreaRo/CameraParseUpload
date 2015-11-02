@@ -1,9 +1,10 @@
 package rish.crearo.cameraparse.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +13,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import rish.crearo.cameraparse.R;
 import rish.crearo.cameraparse.elements.HomeCardElement;
 import rish.crearo.cameraparse.utils.UploadImage;
+import rish.crearo.cameraparse.utils.UploadImageParse;
+import rish.crearo.cameraparse.utils.UploadService;
 
 /**
  * Created by rish on 1/11/15.
@@ -86,7 +90,13 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.DataOb
         }
     }
 
-    private void uploadImageToServer(final HomeCardElement element) {
-        new UploadImage(context, element, rellay).execute();
+    private void uploadImageToServer(HomeCardElement element) {
+//        new UploadImage(context, element, rellay).execute();
+//        Intent intent = new Intent(context, UploadService.class);
+//        intent.putExtra("element", element);
+//        context.startService(intent);
+
+        new UploadImageParse().saveInBack(element);
+
     }
 }

@@ -2,7 +2,6 @@ package rish.crearo.cameraparse;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,6 +17,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rish.crearo.cameraparse.adapters.HomeCardAdapter;
 import rish.crearo.cameraparse.elements.HomeCardElement;
+import rish.crearo.cameraparse.utils.BasePath;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -43,7 +43,7 @@ public class HomeActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, MainActivity.class));
+                startActivity(new Intent(HomeActivity.this, CapturePhotoActivity.class));
             }
         });
 
@@ -54,27 +54,36 @@ public class HomeActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //refreshing
+        mAdapter = new HomeCardAdapter(HomeActivity.this, getDataSet(), (RelativeLayout) findViewById(R.id.home_rellay));
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
     private ArrayList<HomeCardElement> getDataSet() {
         long start = System.currentTimeMillis();
         ArrayList<HomeCardElement> imageCards = new ArrayList<>();
 
-        File sdCard = Environment.getExternalStorageDirectory();
-        File imagesFile = new File(sdCard.getAbsolutePath() + "/cameraparse");
-        File thumbnailFile = new File(sdCard.getAbsolutePath() + "/cameraparse/thumbnails");
+        String imagesFile = BasePath.getBasePath(getApplicationContext());
 
-        if (imagesFile.isDirectory()) {
-            File[] listFiles = imagesFile.listFiles();
+        File[] listFiles = new File(imagesFile).listFiles();
 
-            for (int i = 0; i < listFiles.length; i++) {
-                if (listFiles[i].getName().contains(".png")) {
-                    HomeCardElement element = new HomeCardElement(listFiles[i].getName(), listFiles[i].getAbsolutePath(), imagesFile.getAbsolutePath() + "/thumbnails/" + listFiles[i].getName());
-                    imageCards.add(element);
-                    System.out.println(element.title + " | " + element.imagePath + " | " + element.thumbnailPath);
-                }
+        for (int i = 0; i < listFiles.length; i++) {
+            if (listFiles[i].getName().contains(".png") || listFiles[i].getName().contains(".jpg")) {
+                HomeCardElement element = new HomeCardElement(listFiles[i].getName(), listFiles[i].getAbsolutePath(), new File(imagesFile).getAbsolutePath() + "/thumbnails/" + listFiles[i].getName());
+                imageCards.add(element);
+//                System.out.println(element.title + " | " + element.imagePath + " | " + element.thumbnailPath);
+            } else if (listFiles[i].getName().contains(".mp4")) {
+                HomeCardElement element = new HomeCardElement(listFiles[i].getName(), listFiles[i].getAbsolutePath(), new File(imagesFile).getAbsolutePath() + "/thumbnails/" + listFiles[i].getName().substring(0, listFiles[i].getName().length() - 4) + ".png");
+                imageCards.add(element);
+//                System.out.println(element.title + " | " + element.imagePath + " | " + element.thumbnailPath);
             }
         }
+
         long total = (System.currentTimeMillis() - start) / 1000;
-        System.out.println("Total time to getDataSet() = " + total);
+//        System.out.println("Total time to getDataSet() = " + total);
         return imageCards;
     }
 }
