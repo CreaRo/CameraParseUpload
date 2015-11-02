@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
@@ -86,10 +87,14 @@ public class CapturePhotoActivity extends Activity implements SurfaceHolder.Call
 
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
             int THUMBSIZE = 64;
-            Bitmap thumbImage = ThumbnailUtils.extractThumbnail(bitmap, THUMBSIZE, THUMBSIZE);
+            Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, THUMBSIZE, THUMBSIZE);
+            Matrix matrix = new Matrix();
+            matrix.postRotate(-90);
+            thumb = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(), thumb.getHeight(), matrix, true);
+
 
             ByteArrayOutputStream blob = new ByteArrayOutputStream();
-            thumbImage.compress(Bitmap.CompressFormat.PNG, 0, blob);
+            thumb.compress(Bitmap.CompressFormat.PNG, 0, blob);
             byte[] thumbnailData = blob.toByteArray();
 
             String dir = BasePath.getBasePath(getApplicationContext());

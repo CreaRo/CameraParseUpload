@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -19,7 +20,8 @@ public class NotificationMaker {
     public static void creatStickyNotification(Context context, int percentageComplete) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setAutoCancel(true);
-        builder.setSmallIcon(R.drawable.notification_template_icon_bg);
+        builder.setSmallIcon(R.drawable.selfie);
+        builder.setVibrate(new long[]{0, 300});
         builder.setContentTitle("Uploading Image");
         builder.setContentText(percentageComplete + "% complete");
         builder.setProgress(100, percentageComplete, false);
@@ -42,7 +44,8 @@ public class NotificationMaker {
     private static void showSuccessNotification(Context context) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setAutoCancel(true);
-        builder.setSmallIcon(R.drawable.notification_template_icon_bg);
+        builder.setSmallIcon(R.drawable.selfie);
+        builder.setVibrate(new long[]{0, 200});
         builder.setContentText("Successful Upload");
         builder.setContentTitle("Uploaded Image to Server successfully");
 
@@ -63,6 +66,7 @@ public class NotificationMaker {
     private static void showFailureNotification(Context context) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setAutoCancel(true);
+        builder.setVibrate(new long[]{0, 200});
         builder.setSmallIcon(R.drawable.notification_template_icon_bg);
         builder.setContentText("Failure");
         builder.setContentTitle("Upload image to Server Failed");

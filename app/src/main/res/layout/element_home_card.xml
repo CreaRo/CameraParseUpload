@@ -20,15 +20,17 @@
         android:alpha="0.6"
         android:background="@color/colorPrimary"
         android:elevation="10dp"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
 
-        <TextView
+        <ImageView
             android:id="@+id/element_upload_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:padding="4dp"
+            android:src="@drawable/upload"
             android:text="Upload"
             android:textColor="@color/textColorPrimary"
             android:textStyle="bold" />
@@ -36,10 +38,9 @@
         <TextView
             android:id="@+id/element_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
             android:text="Title"
             android:textColor="@color/textColorPrimary"
             android:textStyle="normal" />

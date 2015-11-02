@@ -31,6 +31,19 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.DataOb
     private Context context;
     private ArrayList<Bitmap> thumbNails;
 
+    public HomeCardAdapter(Context context, ArrayList<HomeCardElement> dataSet) {
+        this.context = context;
+        this.mDataset = dataSet;
+        thumbNails = new ArrayList<>();
+        long start = System.currentTimeMillis();
+
+        for (HomeCardElement card : mDataset) {
+            Bitmap thumbBitmap = BitmapFactory.decodeFile(card.thumbnailPath);
+            thumbNails.add(thumbBitmap);
+        }
+        long total = (System.currentTimeMillis() - start) / 1000;
+    }
+
     @Override
     public DataObjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_home_card, parent, false);
@@ -75,34 +88,18 @@ public class HomeCardAdapter extends RecyclerView.Adapter<HomeCardAdapter.DataOb
         return mDataset.size();
     }
 
-    public HomeCardAdapter(Context context, ArrayList<HomeCardElement> dataSet) {
-        this.context = context;
-        this.mDataset = dataSet;
-        thumbNails = new ArrayList<>();
-        final int THUMBSIZE = 64;
-        long start = System.currentTimeMillis();
-
-        for (HomeCardElement card : mDataset) {
-            Bitmap thumbBitmap = BitmapFactory.decodeFile(card.thumbnailPath);
-            Matrix matrix = new Matrix();
-            matrix.postRotate(-90);
-            thumbBitmap = Bitmap.createBitmap(thumbBitmap, 0, 0, thumbBitmap.getWidth(), thumbBitmap.getHeight(), matrix, true);
-            thumbNails.add(thumbBitmap);
-        }
-        long total = (System.currentTimeMillis() - start) / 1000;
-    }
 
     public static class DataObjectHolder extends RecyclerView.ViewHolder {
         LinearLayout layout;
-        TextView title, uploadStatus;
-        ImageView imageView;
+        TextView title;
+        ImageView imageView, uploadStatus;
 
         public DataObjectHolder(View itemView) {
             super(itemView);
             layout = (LinearLayout) itemView.findViewById(R.id.element_layout);
             title = (TextView) itemView.findViewById(R.id.element_title);
             imageView = (ImageView) itemView.findViewById(R.id.element_imageView);
-            uploadStatus = (TextView) itemView.findViewById(R.id.element_upload_status);
+            uploadStatus = (ImageView) itemView.findViewById(R.id.element_upload_status);
         }
     }
 

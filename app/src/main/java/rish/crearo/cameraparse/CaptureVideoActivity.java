@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
@@ -75,8 +76,13 @@ public class CaptureVideoActivity extends Activity implements SurfaceHolder.Call
                     Log.d("VID", "PATH VIDEO = " + VIDEO_PATH_NAME);
 
                     Bitmap thumb = ThumbnailUtils.createVideoThumbnail(VIDEO_PATH_NAME, MediaStore.Images.Thumbnails.MINI_KIND);
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(-90);
+                    thumb = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(), thumb.getHeight(), matrix, true);
+
                     ByteArrayOutputStream blob = new ByteArrayOutputStream();
                     thumb.compress(Bitmap.CompressFormat.PNG, 0, blob);
+
                     byte[] thumbnailData = blob.toByteArray();
 
                     try {

@@ -12,15 +12,9 @@ import com.parse.ParseObject;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 
-import junit.framework.Assert;
-
-import net.bozho.easycamera.EasyCamera;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 
 import rish.crearo.cameraparse.elements.HomeCardElement;
