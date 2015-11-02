@@ -12,7 +12,16 @@ import com.parse.ParseObject;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 
+import junit.framework.Assert;
+
+import net.bozho.easycamera.EasyCamera;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 import rish.crearo.cameraparse.elements.HomeCardElement;
 
@@ -31,7 +40,7 @@ public class UploadImageParse extends AsyncTask<Void, Void, Void> {
         this.element = element;
     }
 
-    public void saveInBackground(final HomeCardElement element, final Context context) {
+    public void uploadInBackground(final HomeCardElement element, final Context context) {
 
         Bitmap bitmap = BitmapFactory.decodeFile(element.imagePath);
 
@@ -42,11 +51,11 @@ public class UploadImageParse extends AsyncTask<Void, Void, Void> {
 
         ParseFile file = new ParseFile(element.title, image);
 
-        final ParseObject imgupload = new ParseObject("ImageUpload");
+        final ParseObject imgUpload = new ParseObject("ImageUpload");
 
-        imgupload.put("ImageName", element.title);
+        imgUpload.put("ImageName", element.title);
 
-        imgupload.put("ImageFile", file);
+        imgUpload.put("ImageFile", file);
 
         Log.d("T", "Saving in back");
 
@@ -55,7 +64,71 @@ public class UploadImageParse extends AsyncTask<Void, Void, Void> {
             public void done(ParseException e) {
                 if (e == null) {
                     System.out.println("Completed file upload of " + element.title);
-                    imgupload.saveEventually(new SaveCallback() {
+                    imgUpload.saveEventually(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            System.out.println("Done object upload to parse");
+                            if (e != null) {
+                                e.printStackTrace();
+                                NotificationMaker.createNotification(context, false);
+                            } else {
+                                NotificationMaker.createNotification(context, true);
+                            }
+                        }
+                    });
+                } else {
+                    NotificationMaker.createNotification(context, false);
+                    System.out.println("Failed to upload of " + element.title);
+                }
+            }
+        }, new ProgressCallback() {
+            @Override
+            public void done(Integer percentDone) {
+                if (percentDone - previousPercentage >= 3) {
+                    NotificationMaker.creatStickyNotification(context, percentDone);
+                    System.out.println("file Upload " + percentDone + "%");
+                    previousPercentage = percentDone;
+                }
+                if (percentDone >= 98) {
+                    NotificationMaker.creatStickyNotification(context, percentDone);
+                    System.out.println("file Upload " + percentDone + "%");
+                }
+            }
+        });
+    }
+
+    public void uploadInBackgroundVideo(final HomeCardElement element, final Context context) {
+
+        byte video[] = getBytesOfVideo(element);
+
+        if (video == null) {
+            System.out.println("Video size is null");
+            return;
+        }
+        if (video.length >= 9.5 * 1024 * 1024) {
+            System.out.println("Failed to create because file too big.");
+            NotificationMaker.createNotification(context, false);
+            return;
+        }
+
+        System.out.println("Size of upload is " + (float) ((video.length)));
+
+        ParseFile file = new ParseFile(element.title, video);
+
+        final ParseObject vidUpload = new ParseObject("VideoUpload");
+
+        vidUpload.put("VideoName", element.title);
+
+        vidUpload.put("VideoFile", file);
+
+        Log.d("T", "Saving in back");
+
+        file.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    System.out.println("Completed file upload of " + element.title);
+                    vidUpload.saveEventually(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
                             System.out.println("Done object upload to parse");
@@ -90,7 +163,33 @@ public class UploadImageParse extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        saveInBackground(element, context);
+        if (element.imagePath.contains(".png") || element.imagePath.contains(".jpg")) {
+            uploadInBackground(element, context);
+        } else {
+            uploadInBackgroundVideo(element, context);
+        }
+
+        return null;
+    }
+
+    private byte[] getBytesOfVideo(HomeCardElement element) {
+
+        try {
+            System.out.println("Absolute Path = " + new File(element.imagePath).getAbsolutePath().toString());
+            InputStream is = new FileInputStream(new File(element.imagePath).getAbsolutePath().toString());
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte data[] = new byte[1024];
+            int bytesRead = is.read(data);
+            while ((bytesRead) != -1) {
+                bos.write(data, 0, bytesRead);
+                bytesRead = is.read(data);
+            }
+            return bos.toByteArray();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }
