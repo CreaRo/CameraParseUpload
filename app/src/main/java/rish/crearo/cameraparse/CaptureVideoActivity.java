@@ -43,7 +43,7 @@ public class CaptureVideoActivity extends Activity implements SurfaceHolder.Call
         currentTime = System.currentTimeMillis() / 1000;
 
         // we shall take the video in landscape orientation
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         mSurfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         mHolder = mSurfaceView.getHolder();
@@ -115,6 +115,7 @@ public class CaptureVideoActivity extends Activity implements SurfaceHolder.Call
                 mCamera = Camera.open();
             else
                 mCamera = Camera.open(findFrontFacingCamera());
+            mCamera.setDisplayOrientation(90);
             mCamera.unlock();
         }
 
@@ -170,11 +171,32 @@ public class CaptureVideoActivity extends Activity implements SurfaceHolder.Call
         // object that can be used by other applications
         mMediaRecorder.reset();
         mMediaRecorder.release();
-        mCamera.release();
+
+        if (mCamera != null)
+            mCamera.release();
 
         // once the objects have been released they can't be reused
         mMediaRecorder = null;
         mCamera = null;
+    }
+
+    @Override
+    protected void onPause() {
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
+        super.onDestroy();
+        Log.d("CAMERA", "Destroy");
     }
 
     public void onCameraClick(View v) {

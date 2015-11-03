@@ -47,22 +47,21 @@ public class CapturePhotoActivity extends Activity implements SurfaceHolder.Call
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
         super.onPause();
-//        mCamera.stopPreview();
-        mCamera.release();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mCamera.startPreview();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mCamera.release();
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
         Log.d("CAMERA", "Destroy");
     }
 
